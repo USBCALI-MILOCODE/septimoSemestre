@@ -1,0 +1,52 @@
+a {
+  color: #c2c2c2c2;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #fff;
+}
+
+ion-icon {
+  font-size: 1.5em;
+}
+
+ion-icon:hover {
+  cursor: pointer;
+}
+
+/* Ocultar la estrella "half-outline" por defecto */
+.star-half-outline {
+  display: none;
+}
+
+/* Mostrar la estrella "half-outline" y ocultar la "outline" al hacer hover sobre el icono */
+.star-outline:hover {
+  display: none;
+}
+
+.star-outline:hover + .star-half-outline {
+  display: inline-block;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+ion-label p {
+  cursor: pointer;
+  width: max-content;
+  transition: .2s ease all;
+}
+
+ion-label p:hover {
+  text-decoration: underline;
+  color: #fff;
+} 

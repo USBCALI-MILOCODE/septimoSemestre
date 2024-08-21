@@ -1,0 +1,19 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Favoritos</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item *ngFor="let favorito of favorites">
+        <ion-thumbnail slot="start">
+          <img alt="Silhouette of mountains" [src]="favorito.image" />
+        </ion-thumbnail>
+        <ion-label>
+          <p>{{favorito.name}}</p>
+        </ion-label>
+        <ion-icon slot="end" name="star" (click)="removeFavorite(favorito)">
+        </ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
