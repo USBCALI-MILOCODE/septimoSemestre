@@ -3,10 +3,8 @@
     <ion-card-title>Lista de los lugares</ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <!-- Indicador de carga -->
     <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
 
-    <!-- Mostrar lista de lugares cuando la carga ha terminado -->
     <ion-list *ngIf="!loading">
       <ion-card *ngFor="let lugar of lugaresList; let i = index">
         <ion-card-header>
@@ -36,11 +34,16 @@
       </ion-card>
     </ion-list>
 
-    <!-- Mensaje si no hay lugares después de que termina la carga -->
     <ion-item *ngIf="!loading && lugaresList.length === 0">
       <ion-label color="medium">
         No hay lugares disponibles.
       </ion-label>
     </ion-item>
+
+    <!-- Scroll infinito -->
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreLocations($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más lugares...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-card-content>
 </ion-card>

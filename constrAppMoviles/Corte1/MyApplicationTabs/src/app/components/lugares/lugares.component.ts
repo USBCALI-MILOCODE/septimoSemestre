@@ -8,10 +8,11 @@ import { RickyMortyServiceService } from 'src/app/services/ricky-morty-service.s
   styleUrls: ['./lugares.component.scss'],
 })
 export class LugaresComponent implements OnInit {
-
-  lugaresList: any = [];
+  lugaresList: any[] = [];
   residentesList: { [key: string]: any[] } = {};
-  loading: boolean = true; // Estado de carga
+  loading: boolean = true;
+  page: number = 1; // Página actual para la paginación
+  hasMoreLocations: boolean = true; // Control para saber si hay más lugares para cargar
 
   constructor(
     private _locationService: LocationServiceService,
@@ -23,13 +24,14 @@ export class LugaresComponent implements OnInit {
   }
 
   getAllLocations() {
-    this._locationService.getAllLocations()
+    this._locationService.getLocationsByPage(this.page)
       .then(data => {
-        this.lugaresList = data;
-        this.lugaresList.forEach((lugar: any) => {
+        this.lugaresList = [...this.lugaresList, ...data.results];
+        data.results.forEach((lugar: any) => {
           this.obtenerResidentes(lugar);
         });
-        this.loading = false; // Termina la carga cuando los lugares están listos
+        this.loading = false;
+        this.hasMoreLocations = data.info.next !== null; // Verifica si hay más lugares
       });
   }
 
@@ -43,5 +45,13 @@ export class LugaresComponent implements OnInit {
           this.residentesList[lugar.id].push(data);
         });
     });
+  }
+
+  loadMoreLocations(event: any) {
+    if (this.hasMoreLocations) {
+      this.page++;
+      this.getAllLocations();
+    }
+    event.target.complete(); // Finaliza la animación de scroll infinito
   }
 }

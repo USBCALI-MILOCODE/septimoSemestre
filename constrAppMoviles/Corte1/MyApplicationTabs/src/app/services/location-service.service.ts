@@ -9,9 +9,8 @@ export class LocationServiceService {
 
   constructor() { }
 
-  getAllLocations() {
-    return fetch(this.apiUrl)
-      .then(response => response.json())
-      .then(data => data.results)
+  getLocationsByPage(page: number) {
+    return fetch(`${this.apiUrl}?page=${page}`)
+      .then(response => response.json());
   }
 }
