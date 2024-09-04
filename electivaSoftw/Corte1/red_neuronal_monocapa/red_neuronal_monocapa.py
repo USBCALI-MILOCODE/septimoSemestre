@@ -1,6 +1,8 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from tabulate import tabulate
 
-# Definir las entradas (matrices 5x3) y las salidas esperadas (códigos binarios de 4 bits)
+# Definir las entradas y salidas
 ENTRADAS = np.array([
     [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1],  # 0
     [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  # 1
@@ -33,7 +35,7 @@ PESOS_INICIALES = np.random.rand(15, 4)
 
 # Parámetros de entrenamiento
 TASA_APRENDIZAJE = 0.1
-EPOCAS = 10000
+EPOCAS = 100
 
 def activacion(x):
     """Función de activación (paso binario)."""
@@ -56,13 +58,12 @@ def predecir_numero(numero, pesos_entrenados):
     return salida_predicha
 
 def agregar_ruido(entrada, porcentaje_ruido=0.1):
-    """Agrega ruido a la entrada y devuelve los índices alterados."""
-    entrada_con_ruido = entrada.copy()
-    num_bits = len(entrada)
-    num_ruido = int(num_bits * porcentaje_ruido)
-    indices_ruido = np.random.choice(num_bits, num_ruido, replace=False)
-    entrada_con_ruido[indices_ruido] = 1 - entrada_con_ruido[indices_ruido]  # Invertir los bits
-    return entrada_con_ruido, indices_ruido
+    """Agrega ruido a una entrada dada en un porcentaje especificado."""
+    entrada_ruidosa = np.copy(entrada)
+    num_bits_ruido = int(len(entrada) * porcentaje_ruido)
+    indices_ruido = np.random.choice(len(entrada), num_bits_ruido, replace=False)
+    entrada_ruidosa[indices_ruido] = 1 - entrada_ruidosa[indices_ruido]  # Invertir bits
+    return entrada_ruidosa, indices_ruido
 
 def imprimir_matriz_como_numero(entrada, indices_ruido=None):
     """Imprime la matriz como una representación visual del número."""
@@ -78,34 +79,45 @@ def imprimir_matriz_como_numero(entrada, indices_ruido=None):
 # Entrenar la red
 pesos_entrenados, errores = entrenar(ENTRADAS, SALIDAS, PESOS_INICIALES, TASA_APRENDIZAJE, EPOCAS)
 
-# Probar la red con un número específico
-NUMERO_A_PROBAR = 9
-salida_predicha = predecir_numero(NUMERO_A_PROBAR, pesos_entrenados)
+# Graficar el error por época
+plt.plot(errores)
+plt.title('Error medio por época')
+plt.xlabel('Época')
+plt.ylabel('Error medio')
+plt.grid(True)
+plt.show()
 
-print(f"\n[--- NUMERO A PROBAR --- > {NUMERO_A_PROBAR}]\n")
+# Mostrar la representación visual y los resultados
+resumen = []
+for numero_a_probar in range(10):
+    print(f"\nNúmero: {numero_a_probar}")
+    imprimir_matriz_como_numero(ENTRADAS[numero_a_probar])
+    
+    salida_predicha = predecir_numero(numero_a_probar, pesos_entrenados)
+    error = np.any(salida_predicha != SALIDAS[numero_a_probar])
+    estado = "ERROR" if error else "CORRECTO"
+    
+    print(f"Salida Predicha: {salida_predicha}")
+    print(f"Salida Esperada: {SALIDAS[numero_a_probar]}")
+    
+    resumen.append([numero_a_probar, list(salida_predicha), list(SALIDAS[numero_a_probar]), estado])
 
-print("ENTRADA:")
-print(ENTRADAS[NUMERO_A_PROBAR])
+    # Aplicar ruido a las entradas y probar
+    np.random.seed(None)  # Reiniciar la semilla aleatoria para asegurar ruido aleatorio en cada iteración
+    entrada_ruidosa, indices_ruido = agregar_ruido(ENTRADAS[numero_a_probar])
+    print("\nEntrada con Ruido:")
+    imprimir_matriz_como_numero(entrada_ruidosa, indices_ruido)
+    print("\nEn este ejemplo, añadí ruido a los bits en las posiciones:", indices_ruido)
+    
+    salida_predicha_ruido = activacion(np.dot(entrada_ruidosa, pesos_entrenados))
+    error_ruido = np.any(salida_predicha_ruido != SALIDAS[numero_a_probar])
+    estado_ruido = "ERROR" if error_ruido else "CORRECTO"
+    
+    print(f"Salida Predicha con Ruido: {salida_predicha_ruido}")
+    print(f"Salida Esperada: {SALIDAS[numero_a_probar]}")
+    
+    resumen.append([f"{numero_a_probar} (con ruido)", list(salida_predicha_ruido), list(SALIDAS[numero_a_probar]), estado_ruido])
 
-print("\nSALIDA PREDICHA:")
-print(salida_predicha)
-
-print("\nSALIDA ESPERADA:")
-print(SALIDAS[NUMERO_A_PROBAR])
-
-print("\nMATRIZ VISUAL DEL NÚMERO:")
-imprimir_matriz_como_numero(ENTRADAS[NUMERO_A_PROBAR])
-
-# Añadir ruido a la entrada del número específico
-entrada_ruidosa, indices_ruido = agregar_ruido(ENTRADAS[NUMERO_A_PROBAR], porcentaje_ruido=0.2)
-print(f"\n< == ENTRADA RUIDOSA == >")
-print(entrada_ruidosa)
-
-print("\nMATRIZ VISUAL DEL NÚMERO CON RUIDO:")
-imprimir_matriz_como_numero(entrada_ruidosa, indices_ruido)
-
-print("\nEn este ejemplo, añadí ruido a los bits en las posiciones:")
-for idx in indices_ruido:
-    estado_original = ENTRADAS[NUMERO_A_PROBAR][idx]
-    estado_actual = entrada_ruidosa[idx]
-    print(f"Posición: {idx} (originalmente {'1' if estado_original == 1 else '0'}, ahora {'1' if estado_actual == 1 else '0'})")
+# Mostrar el resumen al final en formato tabla
+print("\n[=== RESUMEN ===]\n")
+print(tabulate(resumen, headers=["Entrada", "Salida Predicha", "Salida Esperada", "Estado"], tablefmt="fancy_grid"))

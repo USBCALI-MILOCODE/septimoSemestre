@@ -15,6 +15,10 @@ export class PersonajesComponent implements OnInit {
   isModalOpen = false;  // Variable para controlar la visibilidad del modal
   updateFavorites: any;
 
+  page = 1;  // Página actual
+  loading = false;  // Estado de carga
+  allCharactersLoaded = false;  // Indica si ya se cargaron todos los personajes
+
   constructor(
     private _rickyMortyService: RickyMortyServiceService,
     private renderer: Renderer2,
@@ -25,15 +29,25 @@ export class PersonajesComponent implements OnInit {
     this.getAllCharacters();
   }
 
-  getAllCharacters() {
-    this._rickyMortyService.getAllCharacters()
+  getAllCharacters(event?: any) {
+    if (this.loading || this.allCharactersLoaded) return;  // Evita llamadas múltiples
+    this.loading = true;  // Activa el estado de carga
+    this._rickyMortyService.getAllCharacters(this.page)
       .then(data => {
-        this.personajesList = data;
-        this.iconNames = this.personajesList.map((personaje: { id: number; }) =>
-          this.isFavorite(personaje.id) ? 'star' : 'star-outline'
-        );
+        if (data.length === 0) {
+          this.allCharactersLoaded = true;  // Marca que todos los personajes fueron cargados
+        } else {
+          this.personajesList = [...this.personajesList, ...data];
+          this.iconNames = this.personajesList.map((personaje: { id: number; }) =>
+            this.isFavorite(personaje.id) ? 'star' : 'star-outline'
+          );
+          this.page++;  // Incrementa la página
+        }
+        this.loading = false;  // Desactiva el estado de carga
+        if (event) event.target.complete();  // Finaliza el evento de scroll
       });
   }
+
 
   isFavorite(id: number): boolean {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');

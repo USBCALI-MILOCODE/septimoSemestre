@@ -1,15 +1,23 @@
 <ion-card>
   <ion-card-header>
-    <ion-card-title>Favoritos</ion-card-title>
+    <ion-card-title>Lista de Favoritos</ion-card-title>
   </ion-card-header>
   <ion-card-content>
     <ion-list>
+      <!-- Si no hay favoritos, se muestra un mensaje -->
+      <ion-item *ngIf="favorites.length === 0">
+        <ion-label color="medium">
+          No tienes personajes en tu lista de favoritos.
+        </ion-label>
+      </ion-item>
+
+      <!-- Mostrar los favoritos cuando haya elementos -->
       <ion-item *ngFor="let favorito of favorites">
         <ion-thumbnail slot="start">
-          <img alt="Silhouette of mountains" [src]="favorito.image" />
+          <img alt="Imagen del personaje" [src]="favorito.image" />
         </ion-thumbnail>
         <ion-label>
-          <p>{{favorito.name}}</p>
+          <p>{{ favorito.name }}</p>
         </ion-label>
         <ion-icon slot="end" name="star" (click)="removeFavorite(favorito)">
         </ion-icon>

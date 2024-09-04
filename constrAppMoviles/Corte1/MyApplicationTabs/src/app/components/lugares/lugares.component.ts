@@ -11,6 +11,7 @@ export class LugaresComponent implements OnInit {
 
   lugaresList: any = [];
   residentesList: { [key: string]: any[] } = {};
+  loading: boolean = true; // Estado de carga
 
   constructor(
     private _locationService: LocationServiceService,
@@ -27,8 +28,8 @@ export class LugaresComponent implements OnInit {
         this.lugaresList = data;
         this.lugaresList.forEach((lugar: any) => {
           this.obtenerResidentes(lugar);
-        })
-        console.log(this.lugaresList);
+        });
+        this.loading = false; // Termina la carga cuando los lugares están listos
       });
   }
 
@@ -41,7 +42,6 @@ export class LugaresComponent implements OnInit {
         .then(data => {
           this.residentesList[lugar.id].push(data);
         });
-    })
+    });
   }
-
 }

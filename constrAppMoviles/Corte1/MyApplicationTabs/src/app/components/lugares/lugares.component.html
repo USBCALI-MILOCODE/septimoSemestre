@@ -3,7 +3,11 @@
     <ion-card-title>Lista de los lugares</ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <ion-list>
+    <!-- Indicador de carga -->
+    <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+
+    <!-- Mostrar lista de lugares cuando la carga ha terminado -->
+    <ion-list *ngIf="!loading">
       <ion-card *ngFor="let lugar of lugaresList; let i = index">
         <ion-card-header>
           <ion-card-title>{{ lugar.name }}</ion-card-title>
@@ -13,7 +17,7 @@
           <ion-accordion-group>
             <ion-accordion>
               <ion-item slot="header">
-                <ion-label>Residentes ({{ residentesList[lugar.id]?.length }})</ion-label>
+                <ion-label>Residentes ({{ residentesList[lugar.id].length }})</ion-label>
               </ion-item>
               <ion-list slot="content">
                 <ion-item *ngFor="let resident of residentesList[lugar.id]">
@@ -31,5 +35,12 @@
         </ion-card-content>
       </ion-card>
     </ion-list>
+
+    <!-- Mensaje si no hay lugares después de que termina la carga -->
+    <ion-item *ngIf="!loading && lugaresList.length === 0">
+      <ion-label color="medium">
+        No hay lugares disponibles.
+      </ion-label>
+    </ion-item>
   </ion-card-content>
 </ion-card>

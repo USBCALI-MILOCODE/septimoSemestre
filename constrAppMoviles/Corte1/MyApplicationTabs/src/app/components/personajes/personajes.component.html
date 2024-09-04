@@ -16,9 +16,18 @@
         </ion-icon>
       </ion-item>
     </ion-list>
+
+    <!-- Scroll Infinito -->
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="getAllCharacters($event)">
+      <ion-infinite-scroll-content
+        loading-spinner="bubbles"
+        loading-text="Cargando más personajes...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-card-content>
 </ion-card>
 
+<!-- Modal -->
 <ion-modal [isOpen]="isModalOpen" (willDismiss)="closeModal()">
   <ng-template>
     <ion-header>

@@ -4,6 +4,7 @@ import { PersonajesComponent } from './personajes/personajes.component';
 import { IonicModule } from '@ionic/angular';
 import { LugaresComponent } from './lugares/lugares.component';
 import { FavoritesComponent } from './favorites/favorites.component';
+import { SearchComponent } from './search/search.component';
 
 
 
@@ -11,7 +12,8 @@ import { FavoritesComponent } from './favorites/favorites.component';
   declarations: [
     PersonajesComponent,
     LugaresComponent,
-    FavoritesComponent
+    FavoritesComponent,
+    SearchComponent
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { FavoritesComponent } from './favorites/favorites.component';
   exports: [
     PersonajesComponent,
     LugaresComponent,
-    FavoritesComponent
+    FavoritesComponent,
+    SearchComponent
   ]
 })
 export class ComponentsModule { }

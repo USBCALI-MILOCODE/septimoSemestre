@@ -25,3 +25,4 @@ export class FavoritesComponent  implements OnInit {
     this._favoritesService.updateFavorites(updatedFavorites);
   }
 }
+

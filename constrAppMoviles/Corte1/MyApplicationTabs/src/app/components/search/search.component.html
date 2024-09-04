@@ -1,0 +1,33 @@
+<ion-content>
+  <ion-searchbar animated="true" placeholder="Buscar personaje..." (ionInput)="onSearch($event)"></ion-searchbar>
+
+  <ion-grid>
+    <ion-row>
+      <!-- Mostrar mensaje si no hay personajes filtrados y la búsqueda no está vacía -->
+      <ion-col size="12">
+        <ion-item *ngIf="personajesFiltrados.length === 0 && searchQuery !== ''">
+          <ion-label color="medium">
+            Escribe el nombre del personaje que estás buscando.
+          </ion-label>
+        </ion-item>
+      </ion-col>
+
+      <!-- Mostrar los personajes filtrados -->
+      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let personaje of personajesFiltrados">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ personaje.name }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-img [src]="personaje.image"></ion-img>
+            <p><strong>Especie:</strong> {{ personaje.species }}</p>
+            <p><strong>Género:</strong> {{ personaje.gender }}</p>
+            <p><strong>Estado:</strong> {{ personaje.status }}</p>
+            <p><strong>Ubicación:</strong> {{ personaje.location.name }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

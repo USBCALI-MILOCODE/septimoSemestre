@@ -9,10 +9,10 @@ export class RickyMortyServiceService {
 
   constructor() { }
 
-  getAllCharacters() {
-    return fetch(this.apiURL)
+  getAllCharacters(page: number = 1) {
+    return fetch(`${this.apiURL}?page=${page}`)
       .then(response => response.json())
-      .then(data => data.results)
+      .then(data => data.results);
   }
 
   getCharacterById(id: string | null) {
